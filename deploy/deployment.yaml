@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp
+  template:
+    metadata:
+      labels:
+        app: myapp
+    spec:
+      containers:
+        - name: myapp
+          image: my-go-app:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8081  # Port on which your Go application listens
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: myapp-service
+spec:
+  selector:
+    app: myapp
+  ports:
+    - protocol: TCP
+      port: 8081  # Port you want to expose externally
+      targetPort: 8081  # Port on which your Go application listens
+  type: LoadBalancer  # Type of service (LoadBalancer, NodePort, or ClusterIP)
